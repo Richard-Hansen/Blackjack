@@ -13,6 +13,7 @@ class Player(object):
 	def checkHand(self):
 		return self.__hand
 
+
 class Blackjack(object):
 
 	def __init__(self, player):
@@ -31,19 +32,34 @@ class Blackjack(object):
 		print "Bankroll: " + str(self.player.checkBank())
 		print "Current Hand: " + str(self.player.checkHand())
 
+	def makeBet(self):
+		print "Please enter your bet!"
+		while True:
+			try:
+				bet = int(raw_input())
+			except:
+				print "You did not enter an integer!"
+				continue
+			else:
+				if (bet > self.player.checkBank()):
+					print "You only have $" + str(self.player.checkBank()) + "! Try a smaller bet!"
+				else:
+					self.bet = bet
+					print "Your bet has been placed!"
+					break
+
+
+def playGame(blackjack):
+	print "Welcome to Blackjack! Let's get started!"
+	blackjack.makeBet()
+
+
+
+
 
 if __name__ == "__main__":
-	p = Player()
-	print p.checkBank()
+	player = Player();
+	blackjack = Blackjack(player)
+	playGame(blackjack)
 
-	g = Blackjack(p)
-	print g.deck
-
-	for x in range (0,20):
-		card = g.dealCard()
-		if card == 'A':
-			print "kjsjkndsfjnknjkdfsjnksdjnkjnkjnnjksjnkjnkjnksdf"
-		print card
-		print g.deck
-
-	g.playerInfo()
+	
