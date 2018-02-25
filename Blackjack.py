@@ -35,15 +35,13 @@ class Blackjack(object):
 		if (len(person.hand) > 1):
 			if (not person.isDealer):
 				print "Your current hand is: " + str(self.player.checkHand())
+			elif (len(person.hand) < 3):
+				print "The dealer's is showing: " + str(self.dealer.checkHand()[0])
 			else:
 				print "The dealer's hand is: " + str(self.dealer.checkHand())
 
 		self.deck.remove(card)
 		return card
-
-	def playerInfo(self):
-		print "Bankroll: " + str(self.player.checkBank())
-		print "Current Hand: " + str(self.player.checkHand())
 
 	def makeBet(self):
 		print "Please enter your bet!"
@@ -63,6 +61,7 @@ class Blackjack(object):
 					self.player.bankroll = self.player.bankroll - bet
 					print "Your bet has been placed at: " + str(self.bet)
 					break
+
 	def sumCardsLow(self, person):
 		sumCards = 0
 
@@ -93,26 +92,14 @@ class Blackjack(object):
 			return higher
 		return lower
 
-	# def checkBlackjack(self, person):
-	# 	sumCards1 = 0
-	# 	sumCards2 = 0
-
-	# 	for x in person.hand:
-	# 		if x == 'A':
-	# 			sumCards1 += 1
-	# 			sumCards2 += 11
-	# 		else:
-	# 			sumCards1 += x
-	# 			sumCards2 += x
-
-	# 	if (sumCards1 == 21 or sumCards22 == 21):
-	# 		return True
-		
-	# 	return False
-
 	def runDealer(self):
 		while (self.bestHand(self.dealer) < 16):
 			self.dealCard(self.dealer)
+
+	def resetHands(self):
+		self.player.hand = []
+		self.dealer.hand = []
+		self.deck = self.buildDeck()
 
 
 def playGame(b):
@@ -141,28 +128,30 @@ def playGame(b):
 					print "You Bust!"
 					break
 			elif choice == "s":
+				b.runDealer()
+				dealerScore = b.bestHand(b.dealer)
 				break;
 			else:
 				print "Invalid choice"
 				continue
 
 		if (playerScore > 21):
-			
-		b.runDealer()
-		dealerScore = b.bestHand(b.dealer)
-
-		if (dealerScore > playerScore):
 			print "The dealer won! You lost: " + str(b.bet)
-		elif (dealerScore == playerScore):
-			print "Push! You get your bet of: " + str(b.bet) + " back!"
-		else:
+		elif (dealerScore > 21 or playerScore > dealerScore):
 			b.player.bankroll += (2 * b.bet)
 			print "You won $" + str(b.bet * 2) + "!"
+		elif (dealerScore == playerScore):
+			b.player.bankroll += b.bet
+			print "Push! You get your bet of: $" + str(b.bet) + " back!"
+		else:
+			print "The dealer won! You lost: $" + str(b.bet)
 
 		choice = raw_input("Would you like to play again? (y) (n)")
 
 		if (choice is not "y"):
 			break
+		else:
+			b.resetHands()
 
 
 if __name__ == "__main__":
