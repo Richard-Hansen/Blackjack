@@ -63,21 +63,106 @@ class Blackjack(object):
 					self.player.bankroll = self.player.bankroll - bet
 					print "Your bet has been placed at: " + str(self.bet)
 					break
+	def sumCardsLow(self, person):
+		sumCards = 0
+
+		for x in person.hand:
+			if x == 'A':
+				sumCards += 1
+			else:
+				sumCards += int(x)
+
+		return sumCards
+
+	def sumCardsHigh(self, person):
+		sumCards = 0
+
+		for x in person.hand:
+			if x == 'A':
+				sumCards += 11
+			else:
+				sumCards += int(x)
+
+		return sumCards
+
+	def bestHand(self, person):
+		lower = self.sumCardsLow(person)
+		higher = self.sumCardsHigh(person)
+
+		if (higher > lower and higher < 22):
+			return higher
+		return lower
+
+	# def checkBlackjack(self, person):
+	# 	sumCards1 = 0
+	# 	sumCards2 = 0
+
+	# 	for x in person.hand:
+	# 		if x == 'A':
+	# 			sumCards1 += 1
+	# 			sumCards2 += 11
+	# 		else:
+	# 			sumCards1 += x
+	# 			sumCards2 += x
+
+	# 	if (sumCards1 == 21 or sumCards22 == 21):
+	# 		return True
+		
+	# 	return False
+
+	def runDealer(self):
+		while (self.bestHand(self.dealer) < 16):
+			self.dealCard(self.dealer)
 
 
 def playGame(b):
 	print "Welcome to Blackjack! Let's get started!"
 
-	b.makeBet()
-	b.dealCard(b.player)
-	b.dealCard(b.player)
-
-	b.dealCard(b.dealer)
-	b.dealCard(b.dealer)
-
 	while True:
-		
+		playerScore = 0
+		dealerScore = 0
 
+		b.makeBet()
+		b.dealCard(b.player)
+		b.dealCard(b.player)
+		playerScore = b.bestHand(b.player)
+
+		b.dealCard(b.dealer)
+		b.dealCard(b.dealer)
+		dealerScore = b.bestHand(b.dealer)
+
+		while True:
+			choice = raw_input("Hit (h) or stay (s)?")
+
+			if choice == "h":
+				b.dealCard(b.player)
+				playerScore = b.bestHand(player)
+				if (playerScore > 21):
+					print "You Bust!"
+					break
+			elif choice == "s":
+				break;
+			else:
+				print "Invalid choice"
+				continue
+
+		if (playerScore > 21):
+			
+		b.runDealer()
+		dealerScore = b.bestHand(b.dealer)
+
+		if (dealerScore > playerScore):
+			print "The dealer won! You lost: " + str(b.bet)
+		elif (dealerScore == playerScore):
+			print "Push! You get your bet of: " + str(b.bet) + " back!"
+		else:
+			b.player.bankroll += (2 * b.bet)
+			print "You won $" + str(b.bet * 2) + "!"
+
+		choice = raw_input("Would you like to play again? (y) (n)")
+
+		if (choice is not "y"):
+			break
 
 
 if __name__ == "__main__":
