@@ -3,5 +3,11 @@
 class Player(object):
 
 	def __init__(self):
-		this.bankroll = 100
+		self.__bankroll = 100
 
+	def checkBank(self):
+		return self.__bankroll
+
+if __name__ == "__main__":
+	p = Player()
+	print p.checkBank()
